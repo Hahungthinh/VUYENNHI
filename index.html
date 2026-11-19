@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chúc Mừng Ngày Nhà Giáo 20/11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Palette: hồng chủ đạo — hồng phấn nền, hồng đậm nhấn, chút vàng nhạt điểm xuyết. Một tông duy nhất, không đổi theo dark mode. */
+:root {
+  --bg: #FFF0F5;
+  --bg-alt: #FFE1EC;
+  --text: #4A2235;
+  --text-soft: #8A5A6F;
+  --accent: #F27BA6;
+  --accent-deep: #D9437A;
+  --gold: #E58FB0;
+  --gold-light: #FFD3E4;
+  --sage: #FFB6CE;
+  --card-bg: rgba(255,255,255,0.88);
+  --shadow: rgba(217,67,122,0.14);
+  color-scheme: light;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(180deg, #FFF0F5 0%, #FFE6EF 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ===== PASSWORD SCREEN ===== */
+#password-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FFD6E6 0%, #FFF0F5 45%, #FFC2D9 100%);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+
+#password-screen.hidden {
+  opacity: 0;
+  transform: scale(1.05);
+  pointer-events: none;
+}
+
+.lock-box {
+  text-align: center;
+  padding: 48px 40px;
+  max-width: 400px;
+  width: 90%;
+}
+
+.lock-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(242,123,166,0.3); }
+  50% { box-shadow: 0 0 40px rgba(242,123,166,0.5); }
+}
+
+.lock-icon svg {
+  width: 36px;
+  height: 36px;
+  fill: white;
+}
+
+.lock-box h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--accent-deep);
+  margin-bottom: 8px;
+}
+
+.lock-box p {
+  text-wrap: balance;
+  font-size: 14px;
+  color: var(--text-soft);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.password-input-wrap {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.password-input-wrap input {
+  width: 100%;
+  padding: 14px 20px;
+  border: 2px solid transparent;
+  border-radius: 50px;
+  background: var(--card-bg);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 16px;
+  color: var(--text);
+  text-align: center;
+  letter-spacing: 4px;
+  outline: none;
+  box-shadow: 0 4px 20px var(--shadow);
+  transition: border-color 0.3s;
+}
+
+.password-input-wrap input:focus {
+  border-color: var(--accent);
+}
+
+.password-input-wrap input::placeholder {
+  letter-spacing: 1px;
+  color: var(--text-soft);
+  opacity: 0.6;
+}
+
+.unlock-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 36px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(242,123,166,0.3);
+}
+
+.unlock-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(242,123,166,0.4);
+}
+
+.error-msg {
+  color: var(--accent-deep);
+  font-size: 13px;
+  margin-top: 12px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.error-msg.show { opacity: 1; }
+
+/* ===== MAIN CONTENT ===== */
+#main-content {
+  display: none;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+#main-content.visible {
+  display: block;
+  opacity: 1;
+}
+
+/* Floating petals */
+.petal {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border-radius: 50% 0 50% 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% { opacity: 0; transform: translateY(-20px) rotate(0deg); }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.3; }
+  100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+}
+
+/* Hero */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, var(--gold-light) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-date {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'Dancing Script', cursive;
+  font-size: clamp(36px, 8vw, 64px);
+  font-weight: 700;
+  color: var(--accent-deep);
+  line-height: 1.3;
+  margin-bottom: 12px;
+  text-wrap: balance;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero .subtitle {
+  font-size: clamp(16px, 3vw, 20px);
+  font-weight: 400;
+  color: var(--text-soft);
+  line-height: 1.6;
+  max-width: 580px;
+  text-wrap: balance;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+.flower-divider {
+  margin: 24px 0;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+}
+
+.flower-divider svg { width: 120px; height: 40px; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Photo gallery */
+.gallery-section {
+  padding: 60px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.gallery-section h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 32px;
+  color: var(--accent-deep);
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.photo-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px var(--shadow);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  aspect-ratio: 3/4;
+}
+
+.photo-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px var(--shadow);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.photo-card:hover img {
+  transform: scale(1.05);
+}
+
+.photo-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 16px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+  color: white;
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.photo-card:hover .photo-overlay { opacity: 1; }
+
+/* Wishes section */
+.wishes-section {
+  padding: 80px 20px;
+  background: var(--bg-alt);
+  position: relative;
+}
+
+.wishes-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--bg), var(--bg-alt));
+}
+
+.wishes-container {
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.wishes-container h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 36px;
+  color: var(--accent-deep);
+  margin-bottom: 40px;
+}
+
+.wish-card {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 36px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 24px var(--shadow);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.wish-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--accent), var(--gold));
+  border-radius: 4px 0 0 4px;
+}
+
+.wish-card .quote-mark {
+  font-family: 'Dancing Script', cursive;
+  font-size: 48px;
+  color: var(--accent);
+  opacity: 0.3;
+  line-height: 1;
+  margin-bottom: -8px;
+}
+
+.wish-card p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.wish-card .signature {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--gold);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Poem section */
+.poem-section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.poem-box {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  background: var(--card-bg);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px var(--shadow);
+  position: relative;
+}
+
+.poem-box::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, var(--accent), var(--gold), var(--sage));
+  z-index: -1;
+  opacity: 0.3;
+}
+
+.poem-box h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 28px;
+  color: var(--accent-deep);
+  margin-bottom: 28px;
+}
+
+.poem-box .poem-text {
+  font-size: 16px;
+  line-height: 2;
+  color: var(--text);
+  font-style: italic;
+}
+
+.poem-box .poem-text br { display: block; content: ''; margin: 2px 0; }
+
+/* Footer */
+.footer {
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(to bottom, var(--bg), var(--bg-alt));
+}
+
+.footer .heart {
+  font-size: 48px;
+  animation: heartbeat 1.2s ease-in-out infinite;
+  display: inline-block;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  15% { transform: scale(1.15); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.1); }
+}
+
+.footer p {
+  text-wrap: balance;
+  font-size: 15px;
+  color: var(--text-soft);
+  margin-top: 16px;
+  line-height: 1.6;
+}
+
+.footer .footer-date {
+  font-family: 'Dancing Script', cursive;
+  font-size: 24px;
+  color: var(--gold);
+  margin-top: 20px;
+}
+
+/* Scroll animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .gallery { grid-template-columns: 1fr; gap: 20px; }
+  .wish-card { padding: 28px 24px; }
+  .poem-box { padding: 36px 24px; }
+  .lock-box { padding: 36px 24px; }
+}
+
+/* Sparkle effect */
+.sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 999;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  animation: sparkle-fade 0.6s ease forwards;
+}
+
+@keyframes sparkle-fade {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
+/* Music player */
+.music-btn {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 500;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 8px 8px;
+  border: none;
+  border-radius: 50px;
+  background: var(--card-bg);
+  box-shadow: 0 6px 24px var(--shadow);
+  font-family: 'Quicksand', sans-serif;
+  color: var(--text);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+.music-btn.ready { display: flex; }
+.music-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.music-disc {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 4px, var(--accent-deep) 5px 9px, var(--accent) 10px 100%);
+  display: flex; align-items: center; justify-content: center;
+  animation: spin 4s linear infinite;
+  animation-play-state: paused;
+}
+.music-btn.playing .music-disc { animation-play-state: running; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.music-info { display: flex; flex-direction: column; text-align: left; line-height: 1.3; }
+.music-info strong { font-size: 13px; color: var(--accent-deep); }
+.music-info span { font-size: 11px; color: var(--text-soft); }
+@media (prefers-reduced-motion: reduce) { .music-disc { animation: none; } }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD SCREEN -->
+<div id="password-screen">
+  <div class="lock-box">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 1C8.676 1 6 3.676 6 7v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V10a1 1 0 0 0-1-1h-2V7c0-3.324-2.676-6-6-6zm0 2c2.276 0 4 1.724 4 4v2H8V7c0-2.276 1.724-4 4-4zm0 10a2 2 0 0 1 1 3.732V18a1 1 0 1 1-2 0v-1.268A2 2 0 0 1 12 13z"/></svg>
+    </div>
+    <h2>Bạn ơi, mở khóa nhé!</h2>
+    <p>Nhập mật khẩu để xem điều bất ngờ dành riêng cho bạn</p>
+    <div class="password-input-wrap">
+      <input type="password" id="password-input" placeholder="Nhập mật khẩu..." autofocus>
+    </div>
+    <button class="unlock-btn" id="unlock-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1C8.676 1 6 3.676 6 7h2c0-2.276 1.724-4 4-4s4 1.724 4 4v2H4a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V10a1 1 0 0 0-1-1h-2V7c0-3.324-2.676-6-6-6zm0 12a2 2 0 0 1 1 3.732V18a1 1 0 1 1-2 0v-1.268A2 2 0 0 1 12 13z"/></svg>
+      Mở khóa
+    </button>
+    <p class="error-msg" id="error-msg">Mật khẩu chưa đúng, thử lại nhé!</p>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main-content">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-date">Ngày 20 tháng 11</div>
+    <h1>Chúc Mừng Ngày Nhà Giáo Việt Nam</h1>
+    <div class="flower-divider">
+      <svg viewBox="0 0 120 40" fill="none">
+        <path d="M10 20h40" stroke="var(--gold)" stroke-width="1" opacity="0.5"/>
+        <path d="M70 20h40" stroke="var(--gold)" stroke-width="1" opacity="0.5"/>
+        <circle cx="60" cy="20" r="6" fill="var(--accent)" opacity="0.6"/>
+        <circle cx="60" cy="20" r="3" fill="var(--gold)"/>
+        <ellipse cx="52" cy="16" rx="4" ry="6" fill="var(--accent)" opacity="0.3" transform="rotate(-30 52 16)"/>
+        <ellipse cx="68" cy="16" rx="4" ry="6" fill="var(--accent)" opacity="0.3" transform="rotate(30 68 16)"/>
+        <ellipse cx="52" cy="24" rx="4" ry="6" fill="var(--accent)" opacity="0.3" transform="rotate(30 52 24)"/>
+        <ellipse cx="68" cy="24" rx="4" ry="6" fill="var(--accent)" opacity="0.3" transform="rotate(-30 68 24)"/>
+      </svg>
+    </div>
+    <p class="subtitle">Gửi đến cô giáo mầm non tuyệt vời nhất, người đã gieo những hạt mầm yêu thương vào trái tim bao&nbsp;thế&nbsp;hệ&nbsp;nhỏ</p>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section">
+    <h2 class="reveal">Khoảnh Khắc Đáng Yêu</h2>
+    <div class="gallery">
+      <div class="photo-card reveal">
+        <img src="photo1.png" alt="Ảnh 1">
+        <div class="photo-overlay">Nụ cười tỏa nắng</div>
+      </div>
+      <div class="photo-card reveal">
+        <img src="photo2.png" alt="Ảnh 2">
+        <div class="photo-overlay">Rạng ngời và duyên dáng</div>
+      </div>
+      <div class="photo-card reveal">
+        <img src="photo3.png" alt="Ảnh 3">
+        <div class="photo-overlay">Thanh xuân tươi đẹp</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WISHES -->
+  <section class="wishes-section">
+    <div class="wishes-container">
+      <h2 class="reveal">Lời Chúc Dành Riêng Cho Cậu</h2>
+
+      <div class="wish-card reveal">
+        <div class="quote-mark">"</div>
+        <p>Có một nghề mà ai cũng phải kính trọng, đó là nghề giáo. Có một người mà ai cũng phải yêu thương, đó là thầy cô. Và có một cô giáo mầm non, ngày ngày dùng cả trái tim để chăm sóc những mầm non bé nhỏ, dùng tình yêu thương để nuôi dưỡng những ước mơ đầu đời cho các bé. Cảm ơn cậu vì đã chọn một nghề cao quý đến vậy.</p>
+        <div class="signature">~ Dành cho cậu ~</div>
+      </div>
+
+      <div class="wish-card reveal">
+        <div class="quote-mark">"</div>
+        <p>Nhân ngày Nhà giáo Việt Nam 20/11, chúc cô giáo nhỏ của tớ luôn giữ được nụ cười rạng rỡ ấy, luôn tràn đầy năng lượng để truyền cảm hứng cho các bạn nhỏ. Chúc cậu luôn hạnh phúc, luôn được yêu thương và trân trọng như cách cậu đã yêu thương các học trò nhỏ của mình.</p>
+        <div class="signature">~ Chân thành ~</div>
+      </div>
+
+      <div class="wish-card reveal">
+        <div class="quote-mark">"</div>
+        <p>Cậu là người tuyệt vời khi đã chọn cống hiến tuổi thanh xuân cho sự nghiệp trồng người. Những đứa trẻ thật may mắn khi có một cô giáo xinh đẹp, dịu dàng và tận tâm như cậu. Mong rằng mỗi ngày đến trường với cậu đều là một ngày vui, tràn ngập tiếng cười của các bé!</p>
+        <div class="signature">~ Yêu thương ~</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POEM -->
+  <section class="poem-section">
+    <div class="poem-box reveal">
+      <h2>Vài Dòng Nhỏ Gửi Cậu</h2>
+      <div class="poem-text">
+        Cậu là nắng sớm giữa sân trường,<br>
+        Là tiếng ru êm, là suối yêu thương.<br>
+        Bàn tay cậu nắn từng nét chữ,<br>
+        Gieo vào đời nhỏ những ước mơ hồng.<br>
+        <br>
+        Cô giáo mầm non — nghe thật đáng yêu,<br>
+        Người dệt cầu vồng qua bao buổi chiều.<br>
+        Hai mươi tháng Mười Một xin gửi cậu,<br>
+        Lời chúc bình an, hạnh phúc mỗi ngày thêm.
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <section class="footer">
+    <div class="heart">&#128150;</div>
+    <p>Cảm ơn cậu vì tất cả sự cống hiến và tình yêu thương<br>mà cậu dành cho các bạn nhỏ mỗi ngày.</p>
+    <div class="footer-date">20 / 11 / 2026</div>
+  </section>
+</div>
+
+
+<audio id="bg-music" src="music.mp3" loop preload="auto"></audio>
+<button class="music-btn" id="music-btn" type="button" aria-label="Bật hoặc tắt nhạc">
+  <div class="music-disc"></div>
+  <div class="music-info"><strong>Dành Cho Em</strong><span id="music-state">Hoàng Tôn · bấm để phát</span></div>
+</button>
+
+<script>
+
+// Music
+const music = document.getElementById('bg-music');
+const musicBtn = document.getElementById('music-btn');
+const musicState = document.getElementById('music-state');
+let musicOk = true;
+music.addEventListener('error', () => { musicOk = false; musicBtn.classList.remove('ready'); });
+function playMusic() {
+  if (!musicOk) return;
+  musicBtn.classList.add('ready');
+  music.play().then(() => {
+    musicBtn.classList.add('playing');
+    musicState.textContent = 'Hoàng Tôn · đang phát';
+  }).catch(() => {
+    musicState.textContent = 'Hoàng Tôn · bấm để phát';
+  });
+}
+musicBtn.addEventListener('click', () => {
+  if (music.paused) { playMusic(); }
+  else { music.pause(); musicBtn.classList.remove('playing'); musicState.textContent = 'Hoàng Tôn · tạm dừng'; }
+});
+
+// Password check
+const PASSWORD = '14102003';
+const input = document.getElementById('password-input');
+const btn = document.getElementById('unlock-btn');
+const errorMsg = document.getElementById('error-msg');
+const screen = document.getElementById('password-screen');
+const content = document.getElementById('main-content');
+
+function tryUnlock() {
+  if (input.value === PASSWORD) {
+    screen.classList.add('hidden');
+    playMusic();
+    content.style.display = 'block';
+    requestAnimationFrame(() => {
+      content.classList.add('visible');
+      createPetals();
+      initScrollReveal();
+    });
+    setTimeout(() => { screen.style.display = 'none'; }, 900);
+  } else {
+    errorMsg.classList.add('show');
+    input.style.animation = 'none';
+    input.offsetHeight;
+    input.style.animation = 'shake 0.4s ease';
+    setTimeout(() => errorMsg.classList.remove('show'), 2500);
+  }
+}
+
+btn.addEventListener('click', tryUnlock);
+input.addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
+
+// Shake animation
+const shakeStyle = document.createElement('style');
+shakeStyle.textContent = `@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }`;
+document.head.appendChild(shakeStyle);
+
+// Floating petals
+function createPetals() {
+  const colors = ['#F27BA6', '#FFB6CE', '#FF8FB8', '#FFD3E4', '#E85A93'];
+  for (let i = 0; i < 20; i++) {
+    const petal = document.createElement('div');
+    petal.className = 'petal';
+    petal.style.left = Math.random() * 100 + 'vw';
+    petal.style.animationDuration = (4 + Math.random() * 6) + 's';
+    petal.style.animationDelay = (Math.random() * 8) + 's';
+    petal.style.width = (8 + Math.random() * 10) + 'px';
+    petal.style.height = petal.style.width;
+    petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+    petal.style.opacity = '0';
+    document.body.appendChild(petal);
+  }
+}
+
+// Scroll reveal
+function initScrollReveal() {
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+}
+
+// Mouse sparkle effect
+document.addEventListener('mousemove', (() => {
+  let last = 0;
+  return e => {
+    const now = Date.now();
+    if (now - last < 80) return;
+    last = now;
+    if (document.getElementById('password-screen').style.display === 'none') {
+      const s = document.createElement('div');
+      s.className = 'sparkle';
+      s.style.left = e.clientX + 'px';
+      s.style.top = e.clientY + 'px';
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 600);
+    }
+  };
+})());
+</script>
+</body>
+</html>
